@@ -35,7 +35,7 @@ app.get('/genera-qr/:testo', async (req, res) => {
       .composite([{ input: qrImageResized, top: 0, left: 0 }])
       .toBuffer();
 
-    const immagineClonata = Buffer.from(fs.readFileSync(path.join(__dirname, 'template_sticker.png')));
+    const immagineClonata = Buffer.from(fs.readFileSync(path.join(__dirname, 'template_sticker.PNG')));
 
     const risultato = await sharp(immagineClonata)
     .composite([{ input: qrImage, top: 10, left: 177 }])
