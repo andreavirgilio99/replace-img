@@ -3,7 +3,6 @@ const fs = require('fs');
 const sharp = require('sharp');
 const path = require('path');
 const qr = require('qrcode');
-const { IDontWannaSleepPapa } = require('./yo-no-sleepo-senior');
 
 const app = express();
 const port = 3000;
@@ -25,8 +24,8 @@ app.get('/genera-qr/:testo', async (req, res) => {
         background: { r: 255, g: 255, b: 255, alpha: 1 }
       }
     })
-    .png()
-    .toBuffer();
+      .png()
+      .toBuffer();
 
     const qrImageResized = await sharp(qrBuffer)
       .toBuffer();
@@ -38,9 +37,9 @@ app.get('/genera-qr/:testo', async (req, res) => {
     const immagineClonata = Buffer.from(fs.readFileSync(path.join(__dirname, 'template_sticker.PNG')));
 
     const risultato = await sharp(immagineClonata)
-    .composite([{ input: qrImage, top: 10, left: 177 }])
-    .png()
-    .toBuffer();
+      .composite([{ input: qrImage, top: 10, left: 177 }])
+      .png()
+      .toBuffer();
 
     res.set('Content-Type', 'image/png');
     res.send(risultato);
@@ -52,5 +51,4 @@ app.get('/genera-qr/:testo', async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server in ascolto sulla porta ${port}`);
-  IDontWannaSleepPapa();
 });
