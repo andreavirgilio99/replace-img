@@ -48,10 +48,10 @@ app.get('/genera-qr/:tipo/:testo', async (req, res) => {
         .toBuffer();
 
       if (tipo === 'gettoniera') {
-        const canvas = createCanvas(500, 500);
+        const image = await loadImage(risultato);
+        const canvas = createCanvas(image.width, image.height);
         const ctx = canvas.getContext('2d');
 
-        const image = await loadImage(risultato);
         ctx.drawImage(image, 0, 0);
 
         ctx.font = '17.5px Arial';
@@ -69,6 +69,11 @@ app.get('/genera-qr/:tipo/:testo', async (req, res) => {
       res.status(500).send('Si è verificato un errore durante la generazione del QR code');
     }
   }
+});
+
+app.get('*', (req, res) => {
+  res.set('Content-Type', 'text/plain');
+  res.send('L\'unico endpoint gestito da questo servizio è /genera-qr/:tipo/:testo e i soli valori validi per :tipo sono "pausamatic" e "gettoniera"');
 });
 
 app.listen(port, () => {
