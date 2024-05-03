@@ -3,13 +3,14 @@ const fs = require('fs');
 const sharp = require('sharp');
 const path = require('path');
 const qr = require('qrcode');
+const { createCanvas, loadImage } = require('canvas');
 
 const app = express();
 const port = 3000;
 const QR_SIZE = 104;
 
 app.get('/genera-qr/:tipo/:testo', async (req, res) => {
-  const tipo = req.params.tipo
+  const tipo = req.params.tipo;
   const testo = req.params.testo;
 
   if (tipo !== "pausamatic" && tipo !== "gettoniera") {
@@ -41,10 +42,24 @@ app.get('/genera-qr/:tipo/:testo', async (req, res) => {
 
       const immagineClonata = Buffer.from(fs.readFileSync(path.join(__dirname, 'template_sticker.PNG')));
 
-      const risultato = await sharp(immagineClonata)
+      let risultato = await sharp(immagineClonata)
         .composite([{ input: qrImage, top: 10, left: 177 }])
         .png()
         .toBuffer();
+
+      if (tipo === 'gettoniera') {
+        const canvas = createCanvas(500, 500);
+        const ctx = canvas.getContext('2d');
+
+        const image = await loadImage(risultato);
+        ctx.drawImage(image, 0, 0);
+
+        ctx.font = '17.5px Arial';
+        ctx.fillStyle = 'black';
+        ctx.fillText('GETTONIERA', 58.5, 110);
+
+        risultato = Buffer.from(canvas.toBuffer('image/png'));
+      }
 
       res.set('Content-Type', 'image/png');
       res.send(risultato);
