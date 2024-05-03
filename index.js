@@ -3,11 +3,13 @@ const fs = require('fs');
 const sharp = require('sharp');
 const path = require('path');
 const qr = require('qrcode');
-const { createCanvas, loadImage } = require('canvas');
+const { createCanvas, loadImage, registerFont } = require('canvas');
 
 const app = express();
 const port = 3000;
 const QR_SIZE = 104;
+
+registerFont(path.resolve(__dirname, 'Arial.ttf'), { family: 'Arial' });
 
 app.get('/genera-qr/:tipo/:testo', async (req, res) => {
   const tipo = req.params.tipo;
